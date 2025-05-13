@@ -1,7 +1,10 @@
-const ManyTasks = ({tasks}) => {
+import SingleTask from './SingleTask'
+const ManyTasks = ({tasks, onDelete, onToggle}) => {
     return(
         <>
-        {tasks.map((task)=>( <h3 className="bg-blue-200 p-2 my-2 px-4 cursor-pointer text-base font-bold rounded" key={task.id}>{task.text}</h3>))}
+        {tasks.map((task)=>(
+            <SingleTask key={task.id} task={task} onDelete={onDelete} onToggle={onToggle}/>
+        ))}
            
         </> 
     )
