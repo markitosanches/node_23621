@@ -7,12 +7,6 @@
       "reminder": true
     },
     {
-      "id": "2",
-      "text": "Exercise for 30 minutes",
-      "day": "2023-12-19 08:15:00",
-      "reminder": true
-    },
-    {
       "id": "3",
       "text": "Read a book",
       "day": "2024-01-01 00:01:00",
@@ -34,12 +28,6 @@
       "id": "62d5",
       "text": "Task 3",
       "day": "2025-05-17T13:18",
-      "reminder": false
-    },
-    {
-      "id": "ccfd",
-      "text": "test",
-      "day": "2025-05-14T02:33",
       "reminder": false
     }
   ]
