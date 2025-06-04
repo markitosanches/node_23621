@@ -6,7 +6,7 @@
           <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Vue Store</span>
       </div>
       <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          <button type="button" class="mr-2">
+          <button @click="toggleSideBar" type="button" class="mr-2">
             <span class="sr-only">Open user menu</span>
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 15a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0h8m-8 0-1-4m9 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-9-4h10l2-7H3m2 7L3 4m0 0-.792-3H1"/>
@@ -26,16 +26,49 @@
       </div>
       </div>
     </nav>
-    <router-view/>
+    <router-view
+    :inventory="inventory"
+    :add = "addToCart"
+    />
+    <SideBar
+    :cart="cart"
+    :remove="removeItem"
+    v-if="showSideBar"
+    :toggle = "toggleSideBar"
+    />
     <MainFooter/>
   </div>
 </template>
 
 <script>
 import MainFooter from '@/components/MainFooter.vue'
+import SideBar from '@/components/SideBar.vue'
+import product from '@/products.json'
 export default {
   components: {
+    SideBar,
     MainFooter
+  },
+  data () {
+    return {
+      showSideBar: false,
+      inventory: product,
+      // cart: { 'Gift Bag': 3, 'Travel Bag': 2, 'X-box': 2 }
+      cart: {}
+    }
+  },
+  methods: {
+    toggleSideBar () {
+      this.showSideBar = !this.showSideBar
+    },
+    addToCart (product, index) {
+      if (!this.cart[product]) this.cart[product] = 0
+      this.cart[product] += this.inventory[index].quantity
+    },
+    removeItem (name) {
+      delete this.cart[name]
+    }
+
   }
 }
 </script>
