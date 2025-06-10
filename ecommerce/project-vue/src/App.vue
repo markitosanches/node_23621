@@ -29,6 +29,7 @@
     <router-view
     :inventory="inventory"
     :add = "addToCart"
+    :addInv = "addInventory"
     />
     <SideBar
     :cart="cart"
@@ -44,16 +45,26 @@
 <script>
 import MainFooter from '@/components/MainFooter.vue'
 import SideBar from '@/components/SideBar.vue'
-import product from '@/products.json'
+// import product from '@/products.json'
+import ProductDataService from '@/services/ProductDataService'
 export default {
   components: {
     SideBar,
     MainFooter
   },
+  mounted () {
+    ProductDataService.getAll()
+      .then(response => {
+        this.inventory = response.data
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  },
   data () {
     return {
       showSideBar: false,
-      inventory: product,
+      inventory: [],
       // cart: { 'Gift Bag': 3, 'Travel Bag': 2, 'X-box': 2 }
       cart: {}
     }
@@ -68,6 +79,9 @@ export default {
     },
     removeItem (name) {
       delete this.cart[name]
+    },
+    addInventory (product) {
+      this.inventory.push(product)
     }
 
   },
