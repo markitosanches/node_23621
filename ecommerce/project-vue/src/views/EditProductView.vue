@@ -56,7 +56,7 @@
 import ProductDataService from '@/services/ProductDataService'
 
 export default {
-  props: ['addInv'],
+  props: ['addInv', 'updateInv', 'inventory', 'removeInv', 'remove'],
   data () {
     return {
       message: null,
@@ -70,6 +70,7 @@ export default {
       ProductDataService.update(this.id, this.product)
         .then((response) => {
           //  console.log(response.data)
+          this.updateInv(this.productIndex, this.product)
           this.submitted = true
         })
         .catch((e) => {
@@ -80,6 +81,8 @@ export default {
     deleteProduct () {
       ProductDataService.delete(this.id)
         .then((response) => {
+          this.remove(this.product.name)
+          this.removeInv(this.productIndex)
           this.$router.push({ name: 'home' })
           //  console.log(response.data)
           this.submitted = true
@@ -88,6 +91,14 @@ export default {
           this.message = e.response.data.message
         })
       // console.log(this.product)
+    }
+  },
+  computed: {
+    productIndex () {
+      const index = this.inventory.findIndex((p) => {
+        return p.id === this.id
+      })
+      return index
     }
   },
   mounted () {
