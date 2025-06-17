@@ -38,8 +38,10 @@ export default {
   },
   methods: {
     login () {
-      UserDataService.create(this.user)
+      UserDataService.postLogin(this.user)
         .then(response => {
+          // console.log(response.data.user)
+          this.$store.dispatch('user', response.data.user)
           this.$router.push({ name: 'home' })
         })
         .catch(error => {

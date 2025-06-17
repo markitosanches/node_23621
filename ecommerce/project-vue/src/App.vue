@@ -19,14 +19,17 @@
           <li>
             <router-link :to="{name: 'home'}" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Home</router-link>
           </li>
-          <li>
+           <li v-if="user">
             <router-link :to="{name: 'add-product'}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Add Product</router-link>
           </li>
-          <li>
+          <li v-if="!user">
             <router-link :to="{name: 'user'}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">User</router-link>
           </li>
-           <li>
+           <li v-if="!user">
             <router-link :to="{name: 'login'}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Login</router-link>
+          </li>
+          <li v-if="user">
+            <span @click="logout" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 cursor-pointer">Logout</span>
           </li>
         </ul>
       </div>
@@ -39,6 +42,7 @@
     :updateInv = "updateInventory"
     :removeInv = "removeInventory"
     :remove="removeItem"
+    :user = "user"
     />
     <SideBar
     :cart="cart"
@@ -56,6 +60,8 @@ import MainFooter from '@/components/MainFooter.vue'
 import SideBar from '@/components/SideBar.vue'
 // import product from '@/products.json'
 import ProductDataService from '@/services/ProductDataService'
+import { mapGetters } from 'vuex'
+import UserDataService from './services/UserDataService'
 export default {
   components: {
     SideBar,
@@ -97,15 +103,31 @@ export default {
     },
     removeInventory (index) {
       this.inventory.splice(index, 1)
+    },
+    logout () {
+      UserDataService.getLogout()
+        .then(response => {
+          this.$store.dispatch('user', null)
+          this.$router.push('login')
+        })
     }
-
   },
   computed: {
     totalQuantity () {
       return Object.values(this.cart).reduce((acc, cur) => {
         return acc + cur
       }, 0)
-    }
+    },
+    ...mapGetters(['user'])
+  },
+  created () {
+    UserDataService.getAuth()
+      .then(response => {
+        this.$store.dispatch('user', response.data)
+      })
+      .catch(e => {
+        this.$store.dispatch('user', null)
+      })
   }
 }
 </script>
